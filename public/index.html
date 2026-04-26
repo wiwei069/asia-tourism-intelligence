@@ -249,18 +249,7 @@
                 
                 window_searchData = data;
 
-                // 降级机制：如果真实接口没返回结果，自动生成模拟数据，防止页面空白
-                let items = data.tavilyData?.results || [];
-                if (items.length === 0) {
-                    items = generateMockResults(kw);
-                    // 确保链接列表也有数据
-                    if (!window_searchData.linkList || window_searchData.linkList.length < 10) {
-                        window_searchData.linkList = `===== 模拟参考链接 =====\n1. https://example.com/${kw}/1\n2. https://example.com/${kw}/2\n3. https://en.wikipedia.org/wiki/${kw}`;
-                    }
-                    toast('Tavily 无返回，已加载模拟展示数据', 'info');
-                }
-
-                q('resultCount').innerText = items.length;
+                            q('resultCount').innerText = items.length;
                 q('crawlPanel').style.display='none';
                 renderResults(items);
 
