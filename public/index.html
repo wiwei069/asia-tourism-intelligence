@@ -33,13 +33,13 @@
         @keyframes toastIn { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateX(60px); } }
 
-        /* 新增：图片轮播/展示样式 */
-        .img-slider { display: flex; overflow-x: auto; gap: 8px; padding-top: 8px; scrollbar-width: thin; }
-        .img-slider img { width: 80px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); flex-shrink: 0; }
-        .img-placeholder { width: 80px; height: 60px; background: var(--bg); border: 1px dashed var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--fg-muted); font-size: 12px; flex-shrink: 0; }
+        /* 图片样式 */
+        .img-scroll { display: flex; gap: 8px; padding-top: 12px; overflow-x: auto; scrollbar-width: thin; }
+        .img-scroll img { width: 100px; height: 75px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); flex-shrink: 0; }
+        .img-placeholder { width: 100px; height: 75px; background: var(--bg); border: 1px dashed var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--fg-muted); font-size: 11px; text-align: center; flex-shrink: 0; }
 
-        /* 新增：报告页防遮挡 */
-        #reportSection { padding-top: 100px; } /* 避开导航栏 */
+        /* 报告页防遮挡 */
+        #reportSection { padding-top: 100px; }
         .report-header-bar { position: sticky; top: 0; background: var(--bg-elevated); padding: 16px 0; margin: -32px -32px 24px -32px; padding-left: 32px; padding-right: 32px; border-bottom: 1px solid var(--border); z-index: 10; }
     </style>
 </head>
@@ -47,7 +47,6 @@
     <div class="grid-bg"></div>
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- 导航栏 -->
     <nav style="position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(8,12,20,0.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);">
         <div style="max-width:1400px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:12px;">
@@ -61,7 +60,6 @@
     </nav>
 
     <main id="mainContent" style="position:relative;z-index:1;">
-        <!-- 1. 首页主体 -->
         <section id="heroSection" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 40px;transition:all 0.5s ease;">
             <div style="text-align:center;margin-bottom:48px;">
                 <div style="font-size:14px;color:var(--accent);letter-spacing:6px;margin-bottom:16px;font-weight:500;">INTELLIGENCE PLATFORM</div>
@@ -69,7 +67,7 @@
                     <span style="color:var(--fg);">文旅</span><span style="color:var(--accent);">大视界</span>
                 </h1>
                 <p style="font-size:18px;color:var(--fg-muted);max-width:600px;margin:0 auto;line-height:1.8;">
-                    聚合文旅部权威标准 × 迈点商业榜单 × Tavily全网洞察
+                    聚合文旅部权威标准 × 官网深度情报 × Tavily全网洞察
                 </p>
             </div>
             
@@ -83,21 +81,20 @@
                 </div>
             </div>
 
-            <!-- 6. 热门搜索：动态月度榜单 -->
+            <!-- 行业标杆榜 -->
             <div style="margin-top:32px;text-align:center;">
-                <div style="font-size:12px;color:var(--fg-muted);margin-bottom:12px;">迈点研究院 · 月度标杆项目榜单 (TOP 10)</div>
+                <div style="font-size:12px;color:var(--fg-muted);margin-bottom:12px;">行业标杆榜 · 月度参考项目 (TOP 5)</div>
                 <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;" id="trendingRankings">
-                    <!-- 动态渲染位置 -->
-                    <span class="tag" style="background:var(--card);color:var(--accent);border:1px solid var(--accent);cursor:pointer;" onclick="quickSearch('大唐不夜城')">1. 大唐不夜城</span>
-                    <span class="tag" style="background:var(--card);color:var(--accent2);border:1px solid var(--accent2);cursor:pointer;" onclick="quickSearch('宽窄巷子')">2. 宽窄巷子</span>
-                    <span class="tag" style="background:var(--card);color:#f59e0b;border:1px solid #f59e0b;cursor:pointer;" onclick="quickSearch('上海迪士尼')">3. 上海迪士尼</span>
-                    <span class="tag" style="background:var(--card);color:#a78bfa;border:1px solid #a78bfa;cursor:pointer;" onclick="quickSearch('长沙文和友')">4. 长沙文和友</span>
-                    <span class="tag" style="background:var(--card);color:#10b981;border:1px solid #10b981;cursor:pointer;" onclick="quickSearch('成都熊猫基地')">5. 成都熊猫基地</span>
+                    <span class="tag" style="background:var(--card);color:var(--accent);border:1px solid var(--accent);cursor:pointer;padding:8px 16px;border-radius:8px;font-size:13px;" onclick="quickSearch('大唐不夜城')">1. 大唐不夜城</span>
+                    <span class="tag" style="background:var(--card);color:var(--accent2);border:1px solid var(--accent2);cursor:pointer;padding:8px 16px;border-radius:8px;font-size:13px;" onclick="quickSearch('宽窄巷子')">2. 宽窄巷子</span>
+                    <span class="tag" style="background:var(--card);color:#f59e0b;border:1px solid #f59e0b;cursor:pointer;padding:8px 16px;border-radius:8px;font-size:13px;" onclick="quickSearch('上海迪士尼度假区')">3. 上海迪士尼</span>
+                    <span class="tag" style="background:var(--card);color:#a78bfa;border:1px solid #a78bfa;cursor:pointer;padding:8px 16px;border-radius:8px;font-size:13px;" onclick="quickSearch('长沙超级文和友')">4. 长沙文和友</span>
+                    <span class="tag" style="background:var(--card);color:#10b981;border:1px solid #10b981;cursor:pointer;padding:8px 16px;border-radius:8px;font-size:13px;" onclick="quickSearch('成都大熊猫繁育研究基地')">5. 成都熊猫基地</span>
                 </div>
             </div>
         </section>
 
-        <!-- 2. 结果列表 -->
+        <!-- 结果列表 -->
         <section id="resultsSection" style="display:none;padding:80px 20px 60px;max-width:1400px;margin:0 auto;">
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px;">
                 <div style="display:flex;align-items:center;gap:12px;">
@@ -105,25 +102,24 @@
                         <i class="fas fa-arrow-left"></i> 返回搜索
                     </button>
                     <div style="font-size:14px;color:var(--fg-muted);">
-                        "<span id="searchKeyword" style="color:var(--accent);"></span>" 找到 <span id="resultCount" style="color:var(--accent2);font-weight:600;"></span> 条数据
+                        "<span id="searchKeyword" style="color:var(--accent);"></span>" 找到 <span id="resultCount" style="color:var(--accent2);font-weight:600;"></span> 条精准情报
                     </div>
                 </div>
                 <button onclick="generateReport()" id="genReportBtn" style="padding:10px 24px;background:var(--accent2);color:#000;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px;">
-                    <i class="fas fa-chart-bar"></i> 生成研判报告
+                    <i class="fas fa-chart-bar"></i> 生成数据研判报告
                 </button>
             </div>
             <div id="crawlPanel" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:24px;">
                 <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--fg-muted);">
-                    <i class="fas fa-spider" style="color:var(--accent);"></i> 数据采集中... <span id="crawlStatusText"></span>
+                    <i class="fas fa-spider" style="color:var(--accent);"></i> 深度采集数据中... <span id="crawlStatusText"></span>
                 </div>
             </div>
-            <div id="resultsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:24px;"></div>
+            <div id="resultsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:24px;"></div>
         </section>
 
-        <!-- 3. 报告页 -->
+        <!-- 报告页 -->
         <section id="reportSection" style="display:none;padding:0 20px 60px;max-width:1400px;margin:0 auto;">
             <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
-                <!-- 新增：报告页固定返回栏 -->
                 <div class="report-header-bar">
                     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
                         <button onclick="resetSearch()" style="display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--fg);cursor:pointer;font-family:inherit;font-size:13px;">
@@ -138,7 +134,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div id="reportContent" style="padding:32px;line-height:1.9;font-size:15px;"></div>
             </div>
         </section>
@@ -149,7 +144,6 @@
     </div>
 
     <script>
-        const activeSources = new Set(['wechat', 'xiaohongshu']);
         let searchData = null, reportData = null, linksData = '';
         const $ = id => document.getElementById(id);
         let els = {};
@@ -160,7 +154,7 @@
             c.appendChild(d); setTimeout(() => d.remove(), 3000);
         };
         const openModal = item => {
-            $('modalContent').innerHTML = `<div style="padding:24px"><h3 style="color:var(--accent);margin-bottom:12px">${item.title||''}</h3><div style="font-size:12px;color:var(--fg-muted);margin-bottom:12px;">${item.source || '未知来源'}</div><p style="font-size:13px;color:var(--fg-muted);line-height:1.6">${item.content||''}</p><a href="${item.url||'#'}" target="_blank" style="color:var(--accent2)">查看原文</a></div>`;
+            $('modalContent').innerHTML = `<div style="padding:24px"><h3 style="color:var(--accent);margin-bottom:12px">${item.title||''}</h3><div style="font-size:12px;color:var(--fg-muted);margin-bottom:12px;">${item.source || '数据源'}</div><p style="font-size:13px;color:var(--fg-muted);line-height:1.6">${item.content||''}</p><a href="${item.url||'#'}" target="_blank" style="color:var(--accent2)">查看原文</a></div>`;
             $('detailModal').classList.add('show');
         };
         const closeModal = () => $('detailModal').classList.remove('show');
@@ -172,14 +166,7 @@
                 meta:$('reportMeta'), body:$('reportContent'), btn:$('genReportBtn') };
             els.input.addEventListener('keydown', e => { if(e.key==='Enter') handleSearch(); });
         }
-
-        // 清除旧的平台标签逻辑（需求5）
-        function renderSourceTags() { /* 留空，不再渲染 */ }
-
-        function resetSearch() {
-            els.home.style.display='flex'; els.res.style.display='none'; els.rep.style.display='none';
-            window.scrollTo({top:0,behavior:'smooth'});
-        }
+        function resetSearch() { els.home.style.display='flex'; els.res.style.display='none'; els.rep.style.display='none'; window.scrollTo({top:0,behavior:'smooth'}); }
         function quickSearch(k) { els.input.value = k; handleSearch(); }
         function handleSearchClick() { handleSearch(); }
 
@@ -188,20 +175,24 @@
             if(!kw) return toast('请输入关键词','warning');
             
             els.home.style.display='none'; els.res.style.display='block'; els.rep.style.display='none';
-            els.kw.innerText=kw; els.cnt.innerText='...'; els.list.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);"><i class="fas fa-spinner fa-spin"></i> 正在全网抓取数据...</div>';
-            els.panel.style.display='block'; els.stat.innerText='请求Tavily与社交接口...';
+            els.kw.innerText=kw; els.cnt.innerText='...'; 
+            els.list.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);"><i class="fas fa-spinner fa-spin"></i> 正在进行深度网络爬取...</div>';
+            els.panel.style.display='block'; els.stat.innerText='连接Tavily与定向爬虫节点...';
 
             try {
                 const r = await fetch('/api/search', {
                     method:'POST',
                     headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({keyword:kw, activeSources:Array.from(activeSources)})
+                    body:JSON.stringify({keyword:kw, activeSources:[]})
                 });
                 const d = await r.json();
                 if(!r.ok) throw new Error(d.error||'请求失败');
                 
                 searchData = d;
+                // 结合定向爬取的数据
                 const items = d.tavilyData?.results || [];
+                const deepInfo = d.deepCrawlData || {};
+                
                 els.cnt.innerText = items.length;
                 els.panel.style.display='none';
 
@@ -210,20 +201,27 @@
                     return;
                 }
 
-                // 7. 新增：图片展示逻辑
-                els.list.innerHTML = items.map(p => {
-                    const imgs = p.image || (p.images && p.images.length > 0) ? (p.image ? [p.image] : p.images.slice(0,5)) : [];
+                // 提取图片，如果有定向爬的图片，优先用
+                const defaultImgs = deepInfo.images || [];
+
+                els.list.innerHTML = items.map((p, idx) => {
+                    // 混合图片：定向爬取的 + Tavily的
+                    const imgs = defaultImgs.length > 0 ? defaultImgs : (p.image ? [p.image] : (p.images || []));
                     const imgHtml = imgs.length > 0 
-                        ? `<div class="img-slider">${imgs.map(src => `<img src="${src}" alt="项目图" onerror="this.style.display='none'">`).join('')}</div>`
-                        : `<div class="img-slider"><div class="img-placeholder">无实拍图</div></div>`;
+                        ? `<div class="img-scroll">${imgs.slice(0,5).map(src => `<img src="${src}" alt="实景图" onerror="this.style.display='none'">`).join('')}</div>`
+                        : `<div style="display:flex;gap:8px;padding-top:12px;overflow-x:auto;">
+                             <div style="width:100px;height:75px;background:var(--bg);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--fg-muted);font-size:11px;text-align:center;">官网未公开实景图</div>
+                           </div>`;
 
                     return `
                     <div class="project-card bg-[var(--card)] rounded-xl overflow-hidden cursor-pointer" onclick='openModal(${JSON.stringify(p).replace(/"/g,"&quot;")})'>
+                        <div style="height:180px;background:linear-gradient(135deg,#1a2540,#0f1520);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                            ${imgs.length > 0 ? `<img src="${imgs[0]}" style="width:100%;height:100%;object-fit:cover;" alt="封面" onerror="this.parentElement.innerHTML='<div style=\'color:var(--fg-muted);font-size:12px;\'>图片加载失败</div>'">` : `<div style="color:var(--fg-muted);font-size:12px;">暂无封面</div>`}
+                        </div>
                         ${imgHtml}
-                        <div style="padding:16px;">
-                            <div style="font-weight:700;color:var(--fg);margin-bottom:6px;font-size:15px;">${p.title||'Untitled'}</div>
-                            <div style="font-size:12px;color:var(--fg-muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.content||''}</div>
-                            <div style="margin-top:8px;font-size:11px;color:var(--accent);">Tavily Source</div>
+                        <div style="padding:12px;">
+                            <div style="font-weight:700;color:var(--fg);margin-bottom:4px;font-size:14px;">${p.title||'Untitled'}</div>
+                            <div style="font-size:11px;color:var(--accent);">${p.url?.replace('https://','').replace('http://','') || '数据来源'}</div>
                         </div>
                     </div>`;
                 }).join('');
@@ -236,7 +234,7 @@
 
         async function generateReport() {
             if(!searchData) return toast('请先搜索','warning');
-            els.btn.disabled=true; els.btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> 生成中...';
+            els.btn.disabled=true; els.btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> 数据驱动研判中...';
             try {
                 const r = await fetch('/api/analyze', {
                     method:'POST',
@@ -244,20 +242,18 @@
                     body:JSON.stringify({
                         keyword:searchData.keyword,
                         tavilyData:searchData.tavilyData,
-                        socialData:searchData.socialData,
-                        linkList:searchData.linkList
+                        deepCrawlData: searchData.deepCrawlData // 传入深度爬取数据
                     })
                 });
                 const d = await r.json();
                 if(!r.ok) throw new Error(d.error||'生成失败');
                 
                 reportData = d.report;
-                linksData = searchData.linkList;
                 els.res.style.display='none'; els.rep.style.display='block';
                 els.body.innerHTML = d.report;
                 els.meta.innerText = searchData.keyword;
                 window.scrollTo({top:0,behavior:'smooth'});
-                toast('研判报告生成成功','success');
+                toast('深度研判报告生成成功','success');
             } catch(e) {
                 toast('生成失败: '+e.message,'danger');
             } finally {
@@ -266,7 +262,7 @@
         }
 
         function copyReport() {
-            const txt = (reportData||'').replace(/<[^>]*>/g,'') + "\n\n===== LINKS =====\n" + (linksData||'');
+            const txt = (reportData||'').replace(/<[^>]*>/g,'') + "\n\n【数据来源】\n" + (searchData?.deepCrawlData?.prioritySource?.url || '暂无');
             navigator.clipboard.writeText(txt).then(()=>toast('复制成功','success')).catch(()=>toast('复制失败','danger'));
         }
         function feedToNotebookLM() { copyReport(); window.open('https://notebooklm.google.com/','_blank'); }
