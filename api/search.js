@@ -1,44 +1,49 @@
 // api/search.js
 const axios = require('axios');
-const { deepCrawlTarget } = require('./crawl-target');
+const { fetchMideanRanking } = require('./crawl-ranking');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
   
-  const { keyword, activeSources } = req.body;
+  const { keyword } = req.body;
   if (!keyword) return res.status(400).json({ error: 'Keyword is required' });
 
   try {
-    // 1. 使用 Tavily 进行广度搜索
-    const tvRes = await axios.post('https://api.tavily.com/search', {
-      api_key: process.env.TAVILY_API_KEY,
-      query: keyword,
-      include_image_descriptions: true, // 要求返回图片描述
-      max_results: 6,
-      search_depth: 'advanced'
-    });
+    // 1. 并行执行：Tavily搜索 + 公开榜单抓取
+    const [tvRes, rankingList] = await Promise.allSettled([
+      axios.post('https://api.tavily.com/search', {
+        api_key: process.env.TAVILY_API_KEY,
+        query: keyword,
+        max_results: 6,
+        include_image_descriptions: true
+      }, { timeout: 10000 }),
+      fetchMideanRanking() // 抓取公开的榜单
+    ]);
 
-    const baseResults = tvRes.data?.results || [];
+    // 2. 处理Tavily结果
+    const baseResults = tvRes.status === 'fulfilled' ? tvRes.value.data?.results || [] : [];
 
-    // 2. 针对该项目进行“定向深度爬取”
-    const detailedInfo = await deepCrawlTarget(keyword);
+    // 3. 处理榜单结果
+    const mideanData = rankingList.status === 'fulfilled' ? rankingList.value : [];
 
-    // 3. 合并数据
-    const enrichedResults = baseResults.length > 0 ? baseResults : [detailedInfo.prioritySource];
-
-    // 构建强数据结构
+    // 4. 构建响应
     const response = {
       keyword,
-      tavilyData: { results: enrichedResults },
-      socialData: { wechat: [], xiaohongshu: [] },
-      // 包含定向爬取的关键数据
-      deepCrawlData: detailedInfo,
-      linkList: detailedInfo.relatedLinks.map(l => l?.url || '').filter(Boolean).join('\n')
+      tavilyData: { results: baseResults },
+      rankingData: {
+        source: '迈点研究院公开榜单',
+        list: mideanData
+      }
     };
 
     res.json(response);
   } catch (error) {
-    console.error('Search API Error:', error.message);
-    res.status(500).json({ error: '搜索失败: ' + error.message });
+    console.error('Search API 致命错误:', error.message);
+    // 兜底：无论如何返回标准 JSON，绝不返回 HTML 或挂起
+    res.status(200).json({ 
+      keyword,
+      tavilyData: { results: [] },
+      rankingData: { list: [], error: '公开数据抓取超时，请刷新重试' } 
+    });
   }
 };
