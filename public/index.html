@@ -8,116 +8,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root {
-            --bg: #080c14;
-            --bg-elevated: #0f1520;
-            --card: #141d2e;
-            --border: #1e2d4a;
-            --accent: #d4a24e;
-            --accent2: #2dd4a8;
-            --fg: #e8eaf0;
-            --fg-muted: #7a8ba8;
-            --danger: #ef4444;
-        }
+        :root { --bg: #080c14; --bg-elevated: #0f1520; --card: #141d2e; --border: #1e2d4a; --accent: #d4a24e; --accent2: #2dd4a8; --fg: #e8eaf0; --fg-muted: #7a8ba8; --danger: #ef4444; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Noto Sans SC', sans-serif;
-            background: var(--bg);
-            color: var(--fg);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+        body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: var(--fg); min-height: 100vh; overflow-x: hidden; }
         h1, h2, h3, .serif { font-family: 'Noto Serif SC', serif; }
-        
-        /* 背景网格 */
-        .grid-bg {
-            position: fixed; inset: 0; z-index: 0; pointer-events: none;
-            background-image: linear-gradient(rgba(30,45,74,0.3) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(30,45,74,0.3) 1px, transparent 1px);
-            background-size: 60px 60px;
-        }
-        .grid-bg::after {
-            content: ''; position: absolute; inset: 0;
-            background: radial-gradient(ellipse at 50% 0%, rgba(212,162,78,0.06) 0%, transparent 60%),
-                        radial-gradient(ellipse at 80% 80%, rgba(45,212,168,0.04) 0%, transparent 40%);
-        }
-
-        /* 滚动条 */
+        .grid-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(30,45,74,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(30,45,74,0.3) 1px, transparent 1px); background-size: 60px 60px; }
+        .grid-bg::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(212,162,78,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(45,212,168,0.04) 0%, transparent 40%); }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
-        /* 卡片与动画 */
-        .project-card {
-            transition: all 0.3s ease;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            background: var(--card);
-        }
-        .project-card:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 30px rgba(212,162,78,0.2), 0 8px 32px rgba(0,0,0,0.4);
-            transform: translateY(-4px);
-        }
-
-        /* 弹窗 */
-        .modal-overlay {
-            position: fixed; inset: 0; z-index: 100;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center; justify-content: center;
-            padding: 20px;
-        }
-        .modal-content {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            max-width: 1000px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            animation: modalIn 0.3s ease;
-        }
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.95) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        /* Toast 通知 */
-        .toast-container {
-            position: fixed; top: 80px; right: 20px; z-index: 2000;
-            display: flex; flex-direction: column; gap: 8px;
-        }
-        .toast {
-            padding: 12px 20px; border-radius: 10px; font-size: 14px;
-            color: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
-            display: flex; align-items: center; gap: 8px;
-        }
+        .project-card { transition: all 0.3s ease; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--card); }
+        .project-card:hover { border-color: var(--accent); box-shadow: 0 0 30px rgba(212,162,78,0.2), 0 8px 32px rgba(0,0,0,0.4); transform: translateY(-4px); }
+        .modal-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 16px; max-width: 1000px; width: 100%; max-height: 85vh; overflow-y: auto; animation: modalIn 0.3s ease; }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .toast-container { position: fixed; top: 80px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
+        .toast { padding: 12px 20px; border-radius: 10px; font-size: 14px; color: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.4); animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards; display: flex; align-items: center; gap: 8px; }
         .toast.success { background: linear-gradient(135deg, #065f46, #047857); border: 1px solid #10b981; }
         .toast.danger { background: linear-gradient(135deg, #7f1d1d, #b91c1c); border: 1px solid #ef4444; }
         .toast.info { background: linear-gradient(135deg, #1e3a5f, #1e40af); border: 1px solid #3b82f6; }
         @keyframes toastIn { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateX(60px); } }
-
-        /* 报告页防遮挡 */
         #reportSection { padding-top: 100px; }
-        .report-header-bar {
-            position: sticky; top: 0; background: var(--bg-elevated);
-            padding: 16px 0; margin: -32px -32px 24px -32px;
-            padding-left: 32px; padding-right: 32px;
-            border-bottom: 1px solid var(--border); z-index: 10;
-        }
+        .report-header-bar { position: sticky; top: 0; background: var(--bg-elevated); padding: 16px 0; margin: -32px -32px 24px -32px; padding-left: 32px; padding-right: 32px; border-bottom: 1px solid var(--border); z-index: 10; }
     </style>
 </head>
 <body>
     <div class="grid-bg"></div>
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- 导航栏 -->
     <nav style="position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(8,12,20,0.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);">
         <div style="max-width:1400px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:12px;">
@@ -127,7 +47,6 @@
                     <div style="font-size:10px;color:var(--fg-muted);letter-spacing:2px;">CULTURAL PANORAMA</div>
                 </div>
             </div>
-            <!-- NotebookLM 链接 -->
             <a href="https://notebooklm.google.com/" target="_blank" style="display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--card);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--fg);text-decoration:none;transition:all 0.3s;">
                 <i class="fas fa-brain" style="color:#8b5cf6;"></i>
                 <span>NotebookLM</span>
@@ -137,9 +56,6 @@
     </nav>
 
     <main id="mainContent" style="position:relative;z-index:1;">
-        <!-- ===================================== -->
-        <!-- 1. 首页主体 -->
-        <!-- ===================================== -->
         <section id="heroSection" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 40px;transition:all 0.5s ease;">
             <div style="text-align:center;margin-bottom:48px;">
                 <div style="font-size:14px;color:var(--accent);letter-spacing:6px;margin-bottom:16px;font-weight:500;">INTELLIGENCE PLATFORM</div>
@@ -173,13 +89,9 @@
             </div>
         </section>
 
-        <!-- ===================================== -->
-        <!-- 2. 结果列表页 -->
-        <!-- ===================================== -->
         <section id="resultsSection" style="display:none;padding:80px 20px 60px;max-width:1400px;margin:0 auto;">
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px;">
                 <div style="display:flex;align-items:center;gap:12px;">
-                    <!-- 修复：返回搜索首页（稳妥方案） -->
                     <button onclick="resetSearch()" style="padding:8px 16px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--fg);cursor:pointer;font-family:inherit;font-size:13px;">
                         <i class="fas fa-arrow-left"></i> 返回搜索首页
                     </button>
@@ -192,14 +104,12 @@
             <div id="crawlPanel" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:24px;border-left:4px solid var(--accent);">
                 <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--fg-muted);">
                     <div class="loader"></div>
-                    <span>正在聚合9大信源...</span>
+                    <span id="crawlStatusText">正在获取最新情报...</span>
                 </div>
             </div>
 
-            <!-- 9条结果展示区 -->
             <div id="resultsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:24px;"></div>
 
-            <!-- 【固化】生成报告按钮 - 绝对存在 -->
             <div style="margin-top:40px;text-align:center;padding-top:24px;border-top:1px solid var(--border);">
                 <button id="genReportBtn" onclick="generateReport()" style="padding:14px 40px;background:linear-gradient(135deg,var(--accent2),#1a8c6e);color:#000;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:10px;">
                     <i class="fas fa-chart-line"></i> 生成综合智能研判报告
@@ -207,9 +117,6 @@
             </div>
         </section>
 
-        <!-- ===================================== -->
-        <!-- 3. 报告展示页 -->
-        <!-- ===================================== -->
         <section id="reportSection" style="display:none;padding:0 20px 60px;max-width:1400px;margin:0 auto;">
             <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
                 <div class="report-header-bar">
@@ -221,7 +128,6 @@
                             "<span id="reportMeta" style="color:var(--accent);"></span>" · 阿里云百炼生成
                         </div>
                         <div style="display:flex;gap:10px;">
-                            <!-- 修复：复制报告+链接 -->
                             <button onclick="copyReportWithLinks()" style="padding:8px 16px;background:var(--accent);color:#000;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;">
                                 <i class="fas fa-copy"></i> 复制报告+链接
                             </button>
@@ -236,18 +142,15 @@
         </section>
     </main>
 
-    <!-- 详情弹窗 -->
     <div class="modal-overlay" id="detailModal" onclick="if(event.target===this)closeModal()">
         <div class="modal-content" id="modalContent"></div>
     </div>
 
     <script>
-        // ===== 全局状态 =====
         let searchData = null, reportData = null;
         const $ = id => document.getElementById(id);
         let els = {};
 
-        // ===== 工具函数 =====
         const toast = (msg, type='info') => {
             const c = $('toastContainer'); if(!c) return;
             const d = document.createElement('div');
@@ -256,155 +159,95 @@
             c.appendChild(d); 
             setTimeout(() => d.remove(), 3000);
         };
-        const closeModal = () => $('detailModal')?.classList.remove('show');
 
-        // ===== 路由与UI切换 =====
         function init() {
             els = { 
-                home: $('heroSection'), 
-                res: $('resultsSection'), 
-                rep: $('reportSection'),
-                input: $('searchInput'), 
-                kw: $('searchKeyword'), 
-                cnt: $('resultCount'),
-                list: $('resultsList'), 
-                panel: $('crawlPanel'), 
-                meta: $('reportMeta'), 
-                body: $('reportContent')
+                home: $('heroSection'), res: $('resultsSection'), rep: $('reportSection'),
+                input: $('searchInput'), kw: $('searchKeyword'), cnt: $('resultCount'),
+                list: $('resultsList'), panel: $('crawlPanel'), stat: $('crawlStatusText'),
+                meta: $('reportMeta'), body: $('reportContent')
             };
-            if(els.input) {
-                els.input.addEventListener('keydown', e => { 
-                    if(e.key==='Enter') handleSearch(); 
-                });
-            }
+            if(els.input) els.input.addEventListener('keydown', e => { if(e.key==='Enter') handleSearch(); });
         }
-
         function resetSearch() { 
             if(els.home) els.home.style.display='flex'; 
             if(els.res) els.res.style.display='none'; 
             if(els.rep) els.rep.style.display='none'; 
             window.scrollTo({top:0, behavior:'smooth'}); 
         }
-        
         function quickSearch(k) { 
             if(els.input) els.input.value = k; 
             handleSearch(); 
         }
-
-        // ===== 核心：搜索逻辑 =====
-        async function handleSearchClick() { handleSearch(); }
+        function handleSearchClick() { handleSearch(); }
 
         async function handleSearch() {
             const kw = els.input.value.trim();
             if(!kw) return toast('请输入关键词','warning');
             
-            // UI状态重置
             els.home.style.display='none'; 
             els.res.style.display='block'; 
             els.rep.style.display='none';
             els.kw.innerText = kw; 
             els.cnt.innerText = '...'; 
-            
-            // 加载动画
-            els.list.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);"><i class="fas fa-spinner fa-spin"></i> 全网检索中 (Tavily + 迈点 + 政策库)...</div>';
+            els.list.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);"><i class="fas fa-spinner fa-spin"></i> 正在连接 Tavily...</div>';
             els.panel.style.display='block';
+            els.stat.innerText = '请求数据中...';
 
             try {
-                // 请求后端API
                 const r = await fetch('/api/search', {
                     method:'POST',
                     headers:{'Content-Type':'application/json'},
                     body:JSON.stringify({keyword:kw})
                 });
                 
-                const txt = await r.text();
-                let data;
-                try { 
-                    data = JSON.parse(txt); 
-                } catch(e) { 
-                    throw new Error('服务器返回了无效的数据格式: ' + txt.substring(0, 100)); 
-                }
-
-                // 错误处理
-                if (!r.ok || data.error) {
-                    throw new Error(data.error || `网络错误 ${r.status}`);
-                }
+                // 直接解析JSON，失败直接抛错
+                const data = await r.json();
                 
-                if(!data.tavilyData?.results) throw new Error('数据结构异常');
+                if (data.error) throw new Error(data.error);
                 
                 searchData = data;
-                const items = data.tavilyData.results;
-                
-                // 更新计数 (理论上应该是9条)
+                const items = (data.tavilyData && data.tavilyData.results) ? data.tavilyData.results : [];
                 els.cnt.innerText = items.length;
                 els.panel.style.display='none';
 
-                // 渲染卡片 (9个信息源)
+                // 纯展示真实数据
+                if (items.length === 0) {
+                    els.list.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);">未检索到相关公开信息，请尝试更换关键词。</div>`;
+                    return;
+                }
+
                 els.list.innerHTML = items.map((p, idx) => {
-                    // 简单的来源颜色标记
-                    let badgeColor = '#a78bfa';
-                    if(p.source.includes('迈点')) badgeColor = '#d4a24e';
-                    if(p.source.includes('文旅部')) badgeColor = '#2dd4a8';
-                    
                     return `
                     <div class="project-card">
                         <div style="padding:16px;display:flex;flex-direction:column;height:100%;">
-                            <!-- 标题与来源 -->
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-                                <div style="font-weight:700;color:var(--fg);font-size:14px;flex:1;margin-right:8px;line-height:1.3;">
-                                    ${p.title || '未命名文档'}
-                                </div>
-                                <span style="font-size:11px;background:#222;padding:2px 6px;border-radius:4px;color:${badgeColor};white-space:nowrap;">
-                                    ${p.source || '未知'}
-                                </span>
-                            </div>
-                            
-                            <!-- URL -->
-                            <div style="font-size:11px;color:var(--accent);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                                ${p.url ? p.url.replace(/^https?:\/\//, '') : 'N/A'}
-                            </div>
-                            
-                            <!-- 内容摘要 -->
+                            <div style="font-weight:700;color:var(--fg);font-size:14px;margin-bottom:6px;line-height:1.3;">${p.title || 'Untitled'}</div>
+                            <div style="font-size:11px;color:var(--accent);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.url ? p.url.replace('https://','').substring(0,50)+'...' : 'N/A'}</div>
                             <p style="font-size:12px;color:var(--fg-muted);line-height:1.5;flex-grow:1;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
-                                ${p.content ? p.content.substring(0, 160) + '...' : '暂无摘要信息'}
+                                ${p.content ? p.content.substring(0, 160) + '...' : '无内容'}
                             </p>
-                            
-                            <!-- 原文链接按钮 (修复了点击无反应：确保是真实链接) -->
-                            <a href="${p.url || '#'}" target="_blank" rel="noopener noreferrer" 
-                               style="margin-top:auto;display:inline-block;padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--accent2);font-size:12px;text-decoration:none;width:fit-content;">
-                                查阅原文 <i class="fas fa-external-link-alt" style="font-size:10px;"></i>
+                            <a href="${p.url || '#'}" target="_blank" rel="noopener noreferrer" style="margin-top:auto;display:inline-block;padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--accent2);font-size:12px;text-decoration:none;">
+                                原文 <i class="fas fa-external-link-alt" style="font-size:10px;"></i>
                             </a>
                         </div>
                     </div>`;
                 }).join('');
 
             } catch(e) {
-                console.error('搜索失败:', e);
+                console.error(e);
                 els.panel.style.display='none';
-                toast(e.message, 'danger');
-                els.list.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);font-size:13px;line-height:1.5;">
-                    <strong>检索失败：</strong><br>${e.message}<br><br>
-                    <small>建议：检查 Tavily API Key 是否有效，或网络连接是否正常。</small>
-                </div>`;
+                toast('请求失败: ' + e.message, 'danger');
+                els.list.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);font-size:13px;">请求失败: ${e.message}</div>`;
             }
         }
 
-        // ===== 生成报告 =====
         async function generateReport() {
-            if(!searchData) return toast('请先进行搜索','warning');
-            
+            if(!searchData) return toast('请先搜索','warning');
             const btn = $('genReportBtn');
-            if(btn) { 
-                btn.disabled = true; 
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AI 深度分析中...'; 
-            }
+            if(btn) { btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> 生成中...'; }
             
-            // 切换页面
-            els.res.style.display='none'; 
-            els.rep.style.display='block';
-            
-            // 占位符
-            els.body.innerHTML = '<p style="color:var(--fg-muted);padding:40px;text-align:center;">正在连接大模型生成深度研判报告，请稍候...</p>';
+            els.res.style.display='none'; els.rep.style.display='block';
+            els.body.innerHTML = '<p style="color:var(--fg-muted);text-align:center;padding:40px;">正在生成深度报告...</p>';
             els.meta.innerText = searchData.keyword;
             window.scrollTo({top:0, behavior:'smooth'});
 
@@ -412,61 +255,33 @@
                 const r = await fetch('/api/analyze', {
                     method:'POST',
                     headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({
-                        keyword: searchData.keyword,
-                        tavilyData: searchData.tavilyData
-                    })
+                    body:JSON.stringify({keyword:searchData.keyword, tavilyData:searchData.tavilyData})
                 });
-                
                 const d = await r.json();
-                if(!r.ok) throw new Error(d.error || '生成失败');
+                if(!r.ok) throw new Error(d.error||'生成失败');
                 
                 reportData = d.report;
                 els.body.innerHTML = d.report;
-                toast('报告生成完毕','success');
-                
+                toast('生成成功','success');
             } catch(e) {
-                els.body.innerHTML = `<div style="color:var(--danger);padding:20px;"><strong>生成失败:</strong> ${e.message}</div>`;
-                toast('生成失败: ' + e.message, 'danger');
+                els.body.innerHTML = `<p style="color:var(--danger)">生成失败: ${e.message}</p>`;
+                toast('生成失败','danger');
             } finally {
-                if(btn) { 
-                    btn.disabled = false; 
-                    btn.innerHTML = '<i class="fas fa-chart-line"></i> 生成综合智能研判报告'; 
-                }
+                if(btn) { btn.disabled=false; btn.innerHTML='<i class="fas fa-chart-line"></i> 生成综合智能研判报告'; }
             }
         }
 
-        // ===== 复制功能 =====
-        function copyReport() {
-            const text = (reportData || '').replace(/<[^>]*>/g, '') || '无内容';
-            navigator.clipboard.writeText(text).then(()=>toast('复制成功','success')).catch(()=>toast('复制失败','danger'));
-        }
-
-        // 【修复】复制报告 + 所有信息源链接
         function copyReportWithLinks() {
-            let text = (reportData || '').replace(/<[^>]*>/g, '') || '无内容';
-            text += '\n\n===== 信息源链接 (9源) =====\n';
-            
+            let text = (reportData||'').replace(/<[^>]*>/g,'') + '\n\n===== 来源链接 =====';
             if(searchData?.tavilyData?.results) {
-                searchData.tavilyData.results.forEach((item, i) => {
-                    text += `\n${i+1}. [${item.source}] ${item.title}\n   ${item.url || 'N/A'}\n`;
+                searchData.tavilyData.results.forEach((it,i) => {
+                    text += `\n${i+1}. ${it.title}\n   ${it.url||''}`;
                 });
-            } else {
-                text += '\n暂无链接信息';
             }
-            
-            navigator.clipboard.writeText(text)
-                .then(() => toast('报告+链接已复制!', 'success'))
-                .catch(() => toast('复制失败', 'danger'));
+            navigator.clipboard.writeText(text).then(()=>toast('复制成功','success')).catch(()=>toast('失败','danger'));
         }
+        function feedToNotebookLM() { copyReportWithLinks(); window.open('https://notebooklm.google.com/','_blank'); }
 
-        // 投喂 NotebookLM
-        function feedToNotebookLM() { 
-            copyReportWithLinks(); 
-            window.open('https://notebooklm.google.com/', '_blank'); 
-        }
-
-        // 启动
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
