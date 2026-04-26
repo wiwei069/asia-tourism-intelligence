@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文旅大视界 - CULTURAL PANORAMA</title>
+    <title>文旅大视界 - 研判报告</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -30,8 +30,58 @@
         .toast.info { background: linear-gradient(135deg, #1e3a5f, #1e40af); border: 1px solid #3b82f6; }
         @keyframes toastIn { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateX(60px); } }
-        #reportSection { padding-top: 100px; }
-        .report-header-bar { position: sticky; top: 0; background: var(--bg-elevated); padding: 16px 0; margin: -32px -32px 24px -32px; padding-left: 32px; padding-right: 32px; border-bottom: 1px solid var(--border); z-index: 10; }
+
+        /* ===== 报告专用排版样式 ===== */
+        #reportSection { 
+            padding: 0 20px 60px; 
+            max-width: 900px; /* 窄屏阅读更舒适 */
+            margin: 0 auto; 
+        }
+        .report-wrapper {
+            background: var(--card); 
+            border: 1px solid var(--border); 
+            border-radius: 16px; 
+            overflow: hidden; 
+            min-height: 100vh;
+        }
+        .report-header-bar { 
+            position: sticky; 
+            top: 0; 
+            z-index: 50; 
+            background: rgba(15, 21, 32, 0.95); 
+            backdrop-filter: blur(12px); 
+            border-bottom: 1px solid var(--border); 
+            padding: 16px 32px;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            flex-wrap: wrap; 
+            gap: 16px;
+        }
+        /* 内容区域排版 */
+        .report-content { 
+            padding: 48px 48px 80px 48px; 
+            line-height: 1.8; 
+            font-size: 15px; 
+            color: #d1d5db;
+        }
+        .report-content h1 { font-size: 28px; color: var(--fg); border-bottom: 1px solid var(--border); padding-bottom: 16px; margin: 32px 0 24px 0; font-weight: 700; }
+        .report-content h2 { font-size: 22px; color: var(--accent); margin: 28px 0 16px 0; font-weight: 700; letter-spacing: 1px; }
+        .report-content h3 { font-size: 18px; color: var(--accent2); margin: 20px 0 12px 0; font-weight: 600; }
+        .report-content p { margin-bottom: 16px; color: #cbd5e1; }
+        .report-content ul, .report-content ol { margin: 12px 0 16px 24px; color: #cbd5e1; }
+        .report-content li { margin-bottom: 8px; line-height: 1.6; }
+        .report-content strong { color: var(--fg); font-weight: 600; }
+        .report-content blockquote { 
+            border-left: 3px solid var(--accent); 
+            padding: 8px 16px; 
+            margin: 16px 0; 
+            background: rgba(212, 162, 78, 0.05); 
+            font-style: italic; 
+            color: var(--fg-muted); 
+        }
+        .report-content code { background: var(--bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; color: var(--accent2); border: 1px solid var(--border); }
+        .report-footer-note { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--fg-muted); font-size: 12px; }
     </style>
 </head>
 <body>
@@ -39,7 +89,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- 导航栏 -->
-    <nav style="position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(8,12,20,0.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);">
+    <nav style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,12,20,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);">
         <div style="max-width:1400px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:12px;">
                 <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--accent),#e8c878);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#080c14;" class="serif">文</div>
@@ -56,8 +106,9 @@
         </div>
     </nav>
 
-    <main id="mainContent" style="position:relative;z-index:1;">
-        <!-- 1. 首页主体 -->
+    <main id="mainContent" style="position:relative;z-index:1;padding-top:64px;">
+        
+        <!-- 0. 首页主体 -->
         <section id="heroSection" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 40px;transition:all 0.5s ease;">
             <div style="text-align:center;margin-bottom:48px;">
                 <div style="font-size:14px;color:var(--accent);letter-spacing:6px;margin-bottom:16px;font-weight:500;">INTELLIGENCE PLATFORM</div>
@@ -79,7 +130,6 @@
                 </div>
             </div>
 
-            <!-- 【恢复】全国文旅项目月度标杆参考 (TOP 5) -->
             <div style="margin-top:32px;text-align:center;">
                 <div style="font-size:12px;color:var(--fg-muted);margin-bottom:12px;">全国文旅项目月度标杆参考 (TOP 5)</div>
                 <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;" id="trendingRankings">
@@ -92,7 +142,7 @@
             </div>
         </section>
 
-        <!-- 2. 结果列表页 -->
+        <!-- 1. 结果列表页 -->
         <section id="resultsSection" style="display:none;padding:80px 20px 60px;max-width:1400px;margin:0 auto;">
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px;">
                 <div style="display:flex;align-items:center;gap:12px;">
@@ -111,9 +161,7 @@
                     <span id="crawlStatusText">正在获取最新情报...</span>
                 </div>
             </div>
-
             <div id="resultsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:24px;"></div>
-
             <div style="margin-top:40px;text-align:center;padding-top:24px;border-top:1px solid var(--border);">
                 <button id="genReportBtn" onclick="generateReport()" style="padding:14px 40px;background:linear-gradient(135deg,var(--accent2),#1a8c6e);color:#000;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:10px;">
                     <i class="fas fa-chart-line"></i> 生成综合智能研判报告
@@ -121,32 +169,41 @@
             </div>
         </section>
 
-        <!-- 3. 报告展示页 -->
-        <section id="reportSection" style="display:none;padding:0 20px 60px;max-width:1400px;margin:0 auto;">
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+        <!-- 2. 报告展示页 (重构排版) -->
+        <section id="reportSection" style="display:none;">
+            <div class="report-wrapper">
+                <!-- 顶部工具栏 (固定结构，绝对存在) -->
                 <div class="report-header-bar">
-                    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+                    <div style="display:flex;align-items:center;gap:12px;">
                         <button onclick="resetSearch()" style="display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--fg);cursor:pointer;font-family:inherit;font-size:13px;">
-                            <i class="fas fa-arrow-left"></i> 返回搜索页
+                            <i class="fas fa-arrow-left"></i> 返回搜索
                         </button>
-                        <div style="font-size:12px;color:var(--fg-muted);">
-                            "<span id="reportMeta" style="color:var(--accent);"></span>" · 阿里云百炼生成
-                        </div>
-                        <div style="display:flex;gap:10px;">
-                            <button onclick="copyReportWithLinks()" style="padding:8px 16px;background:var(--accent);color:#000;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;">
-                                <i class="fas fa-copy"></i> 复制报告+链接
-                            </button>
-                            <button onclick="feedToNotebookLM()" style="padding:8px 16px;background:var(--accent2);color:#000;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;">
-                                投喂 NotebookLM
-                            </button>
-                        </div>
+                        <span style="font-size:12px;color:var(--fg-muted);">深度研判报告</span>
+                    </div>
+                    <div style="display:flex;gap:10px;">
+                        <!-- 修复：复制报告+链接按钮 -->
+                        <button onclick="copyReportWithLinks()" style="padding:8px 16px;background:var(--accent);color:#000;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;">
+                            <i class="fas fa-copy"></i> 复制报告+链接
+                        </button>
+                        <button onclick="feedToNotebookLM()" style="padding:8px 16px;background:var(--accent2);color:#000;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;">
+                            投喂 NotebookLM
+                        </button>
                     </div>
                 </div>
-                <div id="reportContent" style="padding:32px;line-height:1.9;font-size:15px;"></div>
+
+                <!-- 报告正文 -->
+                <div id="reportContent" class="report-content">
+                    <!-- 内容由JS渲染 -->
+                </div>
+                
+                <div class="report-footer-note">
+                    由阿里云百炼大模型生成 | 数据驱动文旅洞察
+                </div>
             </div>
         </section>
     </main>
 
+    <!-- 弹窗 -->
     <div class="modal-overlay" id="detailModal" onclick="if(event.target===this)closeModal()">
         <div class="modal-content" id="modalContent"></div>
     </div>
@@ -156,6 +213,7 @@
         const $ = id => document.getElementById(id);
         let els = {};
 
+        // 基础工具
         const toast = (msg, type='info') => {
             const c = $('toastContainer'); if(!c) return;
             const d = document.createElement('div');
@@ -180,13 +238,10 @@
             if(els.rep) els.rep.style.display='none'; 
             window.scrollTo({top:0, behavior:'smooth'}); 
         }
-        
-        function quickSearch(k) { 
-            if(els.input) els.input.value = k; 
-            handleSearch(); 
-        }
+        function quickSearch(k) { if(els.input) els.input.value = k; handleSearch(); }
         function handleSearchClick() { handleSearch(); }
 
+        // 搜索逻辑
         async function handleSearch() {
             const kw = els.input.value.trim();
             if(!kw) return toast('请输入关键词','warning');
@@ -196,9 +251,8 @@
             els.rep.style.display='none';
             els.kw.innerText = kw; 
             els.cnt.innerText = '...'; 
-            els.list.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);"><i class="fas fa-spinner fa-spin"></i> 正在检索全网公开数据...</div>';
+            els.list.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);"><i class="fas fa-spinner fa-spin"></i> 正在检索...</div>';
             els.panel.style.display='block';
-            els.stat.innerText = '请求中...';
 
             try {
                 const r = await fetch('/api/search', {
@@ -206,7 +260,6 @@
                     headers:{'Content-Type':'application/json'},
                     body:JSON.stringify({keyword:kw})
                 });
-                
                 const data = await r.json();
                 if (data.error) throw new Error(data.error);
                 
@@ -216,41 +269,39 @@
                 els.panel.style.display='none';
 
                 if (items.length === 0) {
-                    els.list.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);">未检索到相关公开信息，请尝试更换关键词或检查 Tavily API Key 状态。</div>`;
+                    els.list.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);">未检索到信息</div>`;
                     return;
                 }
 
-                els.list.innerHTML = items.map((p) => {
-                    return `
+                els.list.innerHTML = items.map((p) => `
                     <div class="project-card">
                         <div style="padding:16px;display:flex;flex-direction:column;height:100%;">
-                            <div style="font-weight:700;color:var(--fg);font-size:14px;margin-bottom:6px;line-height:1.3;">${p.title || 'Untitled'}</div>
-                            <div style="font-size:11px;color:var(--accent);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.url ? p.url.replace('https://','').substring(0,50)+'...' : 'N/A'}</div>
+                            <div style="font-weight:700;color:var(--fg);font-size:14px;margin-bottom:6px;">${p.title}</div>
+                            <div style="font-size:11px;color:var(--accent);margin-bottom:8px;">${p.url?.replace('https://','') || 'N/A'}</div>
                             <p style="font-size:12px;color:var(--fg-muted);line-height:1.5;flex-grow:1;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
-                                ${p.content ? p.content.substring(0, 160) + '...' : '无内容'}
+                                ${p.content?.substring(0,150)+'...' || '无'}
                             </p>
-                            <a href="${p.url || '#'}" target="_blank" rel="noopener noreferrer" style="margin-top:auto;display:inline-block;padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--accent2);font-size:12px;text-decoration:none;">
+                            <a href="${p.url||'#'}" target="_blank" style="margin-top:auto;display:inline-block;padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--accent2);font-size:12px;text-decoration:none;">
                                 原文 <i class="fas fa-external-link-alt" style="font-size:10px;"></i>
                             </a>
                         </div>
-                    </div>`;
-                }).join('');
+                    </div>`).join('');
 
             } catch(e) {
-                console.error(e);
                 els.panel.style.display='none';
                 toast('请求失败: ' + e.message, 'danger');
             }
         }
 
+        // 生成报告 (UI切换)
         async function generateReport() {
             if(!searchData) return toast('请先搜索','warning');
             const btn = $('genReportBtn');
             if(btn) { btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> 生成中...'; }
             
-            els.res.style.display='none'; els.rep.style.display='block';
-            els.body.innerHTML = '<p style="color:var(--fg-muted);text-align:center;padding:40px;">正在生成深度报告...</p>';
-            els.meta.innerText = searchData.keyword;
+            els.res.style.display='none'; 
+            els.rep.style.display='block';
+            els.body.innerHTML = '<p style="text-align:center;padding:40px;color:var(--fg-muted);">正在连接大模型生成深度研判...</p>';
             window.scrollTo({top:0, behavior:'smooth'});
 
             try {
@@ -263,7 +314,8 @@
                 if(!r.ok) throw new Error(d.error||'生成失败');
                 
                 reportData = d.report;
-                els.body.innerHTML = d.report;
+                // 渲染为格式化HTML (防止乱码)
+                renderFormattedReport(d.report);
                 toast('生成成功','success');
             } catch(e) {
                 els.body.innerHTML = `<p style="color:var(--danger)">生成失败: ${e.message}</p>`;
@@ -273,16 +325,51 @@
             }
         }
 
+        // 核心修复：将Markdown文本转换为结构清晰的HTML
+        function renderFormattedReport(md) {
+            if(!md) { els.body.innerHTML = '<p>无内容</p>'; return; }
+            
+            let html = md;
+            // 转义HTML标签
+            html = html.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            
+            // 标题转换 (支持 ### 格式)
+            html = html.replace(/### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/# (.*$)/gim, '<h1>$1</h1>');
+            
+            // 加粗
+            html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+            
+            // 换行和段落
+            html = html.replace(/\n/gim, '<br>');
+            html = html.replace(/<br><h/gim, '</p><h');
+            html = html.replace(/<br><\/h/gim, '</h');
+            
+            // 包装段落
+            html = html.replace(/<h3>/gim, '</p><h3>').replace(/<h2>/gim, '</p><h2>');
+            html = '<p>' + html + '</p>';
+            html = html.replace(/<p><\/p>/gim, '');
+            
+            els.body.innerHTML = html;
+        }
+
+        // 复制报告内容 + 信息源链接
         function copyReportWithLinks() {
-            let text = (reportData||'').replace(/<[^>]*>/g,'') + '\n\n===== 来源链接 =====';
+            let text = (reportData || '').replace(/<[^>]*>/g, '') || '无内容';
+            text += '\n\n===== 信息源链接 =====\n';
             if(searchData?.tavilyData?.results) {
-                searchData.tavilyData.results.forEach((it,i) => {
-                    text += `\n${i+1}. ${it.title}\n   ${it.url||''}`;
+                searchData.tavilyData.results.forEach((it, i) => {
+                    text += `\n${i+1}. ${it.title}\n   ${it.url || 'N/A'}\n`;
                 });
             }
-            navigator.clipboard.writeText(text).then(()=>toast('复制成功','success')).catch(()=>toast('失败','danger'));
+            navigator.clipboard.writeText(text).then(()=>toast('已复制到剪贴板','success')).catch(()=>toast('复制失败','danger'));
         }
-        function feedToNotebookLM() { copyReportWithLinks(); window.open('https://notebooklm.google.com/','_blank'); }
+        
+        function feedToNotebookLM() { 
+            copyReportWithLinks(); 
+            window.open('https://notebooklm.google.com/', '_blank'); 
+        }
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
