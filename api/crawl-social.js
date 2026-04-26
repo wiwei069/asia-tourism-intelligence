@@ -1,94 +1,70 @@
-// api/crawl-target.js
+// api/crawl-ranking.js
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-// 辅助函数：获取页面HTML
-async function fetchHTML(url) {
+// 创建一个带严格超时的实例（解决“长时间无反应”）
+const http = axios.create({
+  timeout: 8000, // 8秒超时，到点立刻放弃，绝不卡死
+  headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+  maxContentLength: 500000, // 限制最大响应体积，防止内存溢出
+  maxBodyLength: 500000
+});
+
+async function safeFetch(url) {
   try {
-    const { data } = await axios.get(url, { 
-      timeout: 10000,
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
-    });
-    return data;
-  } catch (e) {
-    return null;
+    const res = await http.get(url);
+    return res.data || '';
+  } catch (err) {
+    console.log(`抓取失败/超时: ${url}`);
+    return ''; // 静默失败，返回空字符串
   }
 }
 
-// 核心函数：定向抓取目标详情 (优先级：官网 > 政府文旅 > 政府新闻 > 舆情)
-async function deepCrawlTarget(keyword) {
-  // 1. 先用 Tavily 找潜在链接 (包含官网标识)
-  const searchRes = await axios.post('https://api.tavily.com/search', {
-    api_key: process.env.TAVILY_API_KEY,
-    query: `${keyword} 官网 旅游`,
-    include_image_descriptions: true,
-    max_results: 8
-  }).catch(() => null);
+// 核心：抓取迈点研究院公开榜单
+async function fetchMideanRanking() {
+  const url = 'https://www.meadin.com/top/'; // 假设的公开榜单页（需替换为实际真实URL）
+  const html = await safeFetch(url);
+  if (!html) return [];
 
-  const rawResults = searchRes?.data?.results || [];
+  const $ = cheerio.load(html);
+  const list = [];
+
+  // 这里需要根据实际网页结构调整 Selector
+  // 假设榜单在一个 class 为 .ranking-list 的表格里
+  $('.ranking-list li, .ranking-list tr').each((i, el) => {
+    if (i >= 10) return; // 只取前10
+    const text = $(el).text().replace(/\s+/g, ' ').trim();
+    if (text.length > 5) {
+      list.push({
+        rank: i + 1,
+        name: text.substring(0, 30), // 截取名称
+        category: '文旅综合' // 可根据文本推断
+      });
+    }
+  });
+  return list;
+}
+
+// 抓取研究报告摘要（公开免费的部分）
+async function fetchResearchAbstract(keyword) {
+  const searchUrl = `https://www.meadin.com/search?q=${encodeURIComponent(keyword)}`;
+  const html = await safeFetch(searchUrl);
+  if (!html) return { title: '', summary: '' };
+
+  const $ = cheerio.load(html);
+  let title = '';
+  let summary = '';
+
+  // 假设研究报告在一个 .article-detail 的 div 里
+  const article = $('.article-detail, .news-detail').first();
+  title = article.find('h1').text().trim() || '相关行业研报';
   
-  // 2. 分类链接 (模拟优先级排序)
-  let officialSite = null;
-  let govCultural = [];
-  let govNews = [];
-  let other = [];
-
-  rawResults.forEach(r => {
-    const url = r.url || '';
-    const title = r.title || '';
-    // 简单规则判断
-    if (url.includes('gov.cn') && (url.includes('culture') || url.includes('tour'))) govCultural.push({...r, type: 'gov_cultural'});
-    else if (url.includes('gov.cn')) govNews.push({...r, type: 'gov_news'});
-    else if (url.includes(keyword.replace(/[^\w]/g, '')) && (url.includes('com') || url.includes('cn'))) officialSite = {...r, type: 'official'};
-    else other.push({...r, type: 'other'});
+  // 提取前3段作为摘要
+  article.find('p').slice(0, 3).each((i, p) => {
+    summary += $(p).text().trim() + ' ';
   });
 
-  // 3. 按优先级选择目标页面进行深度抓取
-  const targetPage = officialSite || govCultural[0] || govNews[0] || rawResults[0];
-  let detailHtml = null;
-  let extractedImages = [];
-
-  if (targetPage?.url) {
-    detailHtml = await fetchHTML(targetPage.url);
-  }
-
-  // 4. 如果是官网，拼命捞图片 (5-8张)
-  if (detailHtml && targetPage?.type === 'official') {
-    const $ = cheerio.load(detailHtml);
-    // 抓取所有可能的图片链接
-    const allImgs = [];
-    $('img').each((i, el) => {
-      let src = $(el).attr('src') || $(el).attr('data-src') || $(el).attr('data-original');
-      if (src) {
-        if (src.startsWith('//')) src = 'https:' + src;
-        if (src.startsWith('/')) src = targetPage.url + src;
-        if (src.startsWith('http') && !src.includes('base64')) {
-          allImgs.push(src);
-        }
-      }
-    });
-    // 去重，取前8张
-    extractedImages = [...new Set(allImgs)].slice(0, 8);
-  }
-
-  // 5. 整理返回数据
-  return {
-    detailContent: extractTextFromHtml(detailHtml, targetPage?.url), // 提取正文
-    images: extractedImages,
-    prioritySource: targetPage,
-    relatedLinks: [officialSite, ...govCultural, ...govNews].filter(Boolean).slice(0, 5)
-  };
+  return { title, summary: summary.substring(0, 500) };
 }
 
-// 提取正文内容 (去除广告导航)
-function extractTextFromHtml(html, url) {
-  if (!html) return '';
-  const $ = cheerio.load(html);
-  // 移除脚本、样式
-  $('script, style, nav, header, footer, iframe, .ad, .banner').remove();
-  // 针对政府网站和官网的特定清理
-  const text = $('body').text() || '';
-  return text.replace(/\s+/g, ' ').trim().substring(0, 2000); // 截取前2000字
-}
-
-module.exports = { deepCrawlTarget };
+module.exports = { fetchMideanRanking, fetchResearchAbstract };
