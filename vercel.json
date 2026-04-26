@@ -1,9 +1,7 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/search.js", "use": "@vercel/node" },
-    { "src": "api/analyze.js", "use": "@vercel/node" },
-    { "src": "api/crawl-social.js", "use": "@vercel/node" },
+    { "src": "api/*.js", "use": "@vercel/node" },
     { "src": "public/**", "use": "@vercel/static" }
   ],
   "routes": [
