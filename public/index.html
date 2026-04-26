@@ -38,6 +38,7 @@
     <div class="grid-bg"></div>
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- 导航栏 -->
     <nav style="position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(8,12,20,0.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);">
         <div style="max-width:1400px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:12px;">
@@ -56,6 +57,7 @@
     </nav>
 
     <main id="mainContent" style="position:relative;z-index:1;">
+        <!-- 1. 首页主体 -->
         <section id="heroSection" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 40px;transition:all 0.5s ease;">
             <div style="text-align:center;margin-bottom:48px;">
                 <div style="font-size:14px;color:var(--accent);letter-spacing:6px;margin-bottom:16px;font-weight:500;">INTELLIGENCE PLATFORM</div>
@@ -63,7 +65,7 @@
                     <span style="color:var(--fg);">文旅</span><span style="color:var(--accent);">大视界</span>
                 </h1>
                 <p style="font-size:18px;color:var(--fg-muted);max-width:600px;margin:0 auto;line-height:1.8;">
-                    聚合文旅部权威标准 × 迈点公开榜单 × 官网深度情报
+                    聚合全网公开情报 × 政策深度解析 × 舆情动态追踪
                 </p>
             </div>
             
@@ -77,8 +79,9 @@
                 </div>
             </div>
 
+            <!-- 【恢复】全国文旅项目月度标杆参考 (TOP 5) -->
             <div style="margin-top:32px;text-align:center;">
-                <div style="font-size:12px;color:var(--fg-muted);margin-bottom:12px;">迈点研究院 · 公开月度标杆参考 (TOP 5)</div>
+                <div style="font-size:12px;color:var(--fg-muted);margin-bottom:12px;">全国文旅项目月度标杆参考 (TOP 5)</div>
                 <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;" id="trendingRankings">
                     <span class="tag" style="background:var(--card);color:var(--accent);border:1px solid var(--accent);cursor:pointer;padding:8px 16px;border-radius:8px;font-size:13px;" onclick="quickSearch('大唐不夜城')">1. 大唐不夜城</span>
                     <span class="tag" style="background:var(--card);color:var(--accent2);border:1px solid var(--accent2);cursor:pointer;padding:8px 16px;border-radius:8px;font-size:13px;" onclick="quickSearch('宽窄巷子')">2. 宽窄巷子</span>
@@ -89,6 +92,7 @@
             </div>
         </section>
 
+        <!-- 2. 结果列表页 -->
         <section id="resultsSection" style="display:none;padding:80px 20px 60px;max-width:1400px;margin:0 auto;">
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px;">
                 <div style="display:flex;align-items:center;gap:12px;">
@@ -117,6 +121,7 @@
             </div>
         </section>
 
+        <!-- 3. 报告展示页 -->
         <section id="reportSection" style="display:none;padding:0 20px 60px;max-width:1400px;margin:0 auto;">
             <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
                 <div class="report-header-bar">
@@ -175,6 +180,7 @@
             if(els.rep) els.rep.style.display='none'; 
             window.scrollTo({top:0, behavior:'smooth'}); 
         }
+        
         function quickSearch(k) { 
             if(els.input) els.input.value = k; 
             handleSearch(); 
@@ -190,9 +196,9 @@
             els.rep.style.display='none';
             els.kw.innerText = kw; 
             els.cnt.innerText = '...'; 
-            els.list.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);"><i class="fas fa-spinner fa-spin"></i> 正在连接 Tavily...</div>';
+            els.list.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);"><i class="fas fa-spinner fa-spin"></i> 正在检索全网公开数据...</div>';
             els.panel.style.display='block';
-            els.stat.innerText = '请求数据中...';
+            els.stat.innerText = '请求中...';
 
             try {
                 const r = await fetch('/api/search', {
@@ -201,9 +207,7 @@
                     body:JSON.stringify({keyword:kw})
                 });
                 
-                // 直接解析JSON，失败直接抛错
                 const data = await r.json();
-                
                 if (data.error) throw new Error(data.error);
                 
                 searchData = data;
@@ -211,13 +215,12 @@
                 els.cnt.innerText = items.length;
                 els.panel.style.display='none';
 
-                // 纯展示真实数据
                 if (items.length === 0) {
-                    els.list.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);">未检索到相关公开信息，请尝试更换关键词。</div>`;
+                    els.list.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);">未检索到相关公开信息，请尝试更换关键词或检查 Tavily API Key 状态。</div>`;
                     return;
                 }
 
-                els.list.innerHTML = items.map((p, idx) => {
+                els.list.innerHTML = items.map((p) => {
                     return `
                     <div class="project-card">
                         <div style="padding:16px;display:flex;flex-direction:column;height:100%;">
@@ -237,7 +240,6 @@
                 console.error(e);
                 els.panel.style.display='none';
                 toast('请求失败: ' + e.message, 'danger');
-                els.list.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);font-size:13px;">请求失败: ${e.message}</div>`;
             }
         }
 
