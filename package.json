@@ -1,0 +1,14 @@
+{
+  "name": "asia-tourism-intelligence",
+  "version": "4.0.0",
+  "description": "亚洲文旅智搜平台",
+  "main": "api/search.js",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "scripts": {
+    "start": "echo \"Run on Vercel\""
+  },
+  "license": "ISC"
+}

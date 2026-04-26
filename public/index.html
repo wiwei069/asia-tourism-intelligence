@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>亚洲文旅智搜</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root { --bg: #080c14; --bg-elevated: #0f1520; --card: #141d2e; --card-hover: #1a2540; --border: #1e2d4a; --accent: #d4a24e; --accent-glow: rgba(212,162,78,0.3); --accent2: #2dd4a8; --fg: #e8eaf0; --fg-muted: #7a8ba8; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: var(--fg); min-height: 100vh; overflow-x: hidden; }
+        h1, h2, h3, .serif { font-family: 'Noto Serif SC', serif; }
+        .grid-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(30,45,74,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(30,45,74,0.3) 1px, transparent 1px); background-size: 60px 60px; }
+        .grid-bg::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(212,162,78,0.06) 0%, transparent 60%); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .search-glow { box-shadow: 0 0 0 1px var(--border), 0 0 40px var(--accent-glow); transition: box-shadow 0.4s; }
+        .search-glow:focus-within { box-shadow: 0 0 0 2px var(--accent), 0 0 60px var(--accent-glow); }
+        @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 0.6; } 100% { transform: scale(1.8); opacity: 0; } }
+        .pulse-ring::before, .pulse-ring::after { content: ''; position: absolute; inset: -8px; border: 2px solid var(--accent); border-radius: inherit; animation: pulse-ring 2s ease-out infinite; }
+        .pulse-ring::after { animation-delay: 1s; }
+        .project-card { transition: all 0.3s ease; border: 1px solid var(--border); }
+        .project-card:hover { border-color: var(--accent); box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-4px); }
+        .tag { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--card); color: var(--fg); cursor: pointer; }
+        .tag:hover { background: var(--accent); color: #000; }
+        .modal-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.show { display: flex; }
+        .modal-content { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 16px; max-width: 1000px; width: 100%; max-height: 85vh; overflow-y: auto; animation: modalIn 0.3s ease; }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .toast-container { position: fixed; top: 80px; right: 20px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
+        .toast { padding: 12px 20px; border-radius: 10px; font-size: 14px; color: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.4); animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards; }
+        .toast.success { background: linear-gradient(135deg, #065f46, #047857); }
+        .toast.danger { background: linear-gradient(135deg, #7f1d1d, #b91c1c); }
+        @keyframes toastIn { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateX(60px); } }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; } }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <nav style="position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(8,12,20,0.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);">
+        <div style="max-width:1400px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--accent),#e8c878);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#080c14;" class="serif">亚</div>
+                <div>
+                    <div style="font-size:16px;font-weight:700;letter-spacing:1px;" class="serif">亚洲文旅智搜</div>
+                    <div style="font-size:10px;color:var(--fg-muted);letter-spacing:2px;">ASIA CULTURAL INTELLIGENCE</div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;">
+                <a href="https://notebooklm.google.com/" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,0.1);border:1px solid var(--accent);border-radius:8px;color:var(--accent);font-size:13px;text-decoration:none;transition:all 0.3s;">
+                    <i class="fab fa-google"></i> <span>NotebookLM</span> <i class="fas fa-external-link-alt" style="font-size:10px;"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main id="mainContent" style="position:relative;z-index:1;">
+        <!-- 首页 -->
+        <section id="heroSection" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 40px;">
+            <div style="text-align:center;margin-bottom:48px;">
+                <div style="font-size:13px;color:var(--accent);letter-spacing:4px;margin-bottom:16px;text-transform:uppercase;">Intelligence Platform</div>
+                <h1 class="serif" style="font-size:clamp(2rem, 5vw, 3.5rem);font-weight:900;line-height:1.2;margin-bottom:16px;color:var(--fg);">
+                    亚洲文旅<span style="color:var(--accent);">智搜</span>
+                </h1>
+                <p style="font-size:16px;color:var(--fg-muted);max-width:500px;margin:0 auto;line-height:1.8;">
+                    聚合全网数据源，智能搜索亚洲文旅项目全维度信息<br>从投资策划到运营数据，一键研判
+                </p>
+            </div>
+            
+            <div class="search-glow" style="width:min(600px,90%);background:var(--card);border-radius:16px;padding:6px;position:relative;">
+                <div style="display:flex;align-items:center;">
+                    <i class="fas fa-search" style="padding:0 20px;color:var(--accent);font-size:16px;"></i>
+                    <input type="text" id="searchInput" placeholder="输入项目名称、区位或投资商..." style="flex:1;background:none;border:none;outline:none;color:var(--fg);font-size:16px;padding:16px 0;font-family:inherit;">
+                    <button onclick="startSearch()" id="searchBtn" style="padding:14px 28px;background:var(--accent);color:#080c14;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">
+                        搜索
+                    </button>
+                </div>
+            </div>
+
+            <div style="margin-top:24px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+                <span class="tag" onclick="quickSearch('上海迪士尼')">上海迪士尼</span>
+                <span class="tag" onclick="quickSearch('北京环球影城')">北京环球影城</span>
+                <span class="tag" onclick="quickSearch('珠海长隆')">珠海长隆</span>
+                <span class="tag" onclick="quickSearch('华侨城')">华侨城</span>
+            </div>
+        </section>
+
+        <!-- 结果页 -->
+        <section id="resultsSection" style="display:none;padding:100px 20px 60px;max-width:1400px;margin:0 auto;">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <button onclick="resetSearch()" style="padding:8px 16px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--fg);cursor:pointer;font-size:13px;">
+                        <i class="fas fa-arrow-left"></i> 返回
+                    </button>
+                    <div style="font-size:14px;color:var(--fg-muted);">
+                        搜索 "<span id="searchKeyword" style="color:var(--accent);"></span>" 找到 <span id="resultCount" style="color:var(--accent2);font-weight:600;"></span> 条结果
+                    </div>
+                </div>
+                <button onclick="generateReport()" id="genReportBtn" style="padding:10px 20px;background:var(--accent2);color:#080c14;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;">
+                    <i class="fas fa-file-alt"></i> 生成研判报告
+                </button>
+            </div>
+
+            <div id="crawlStatus" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:24px;">
+                <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--fg-muted);">
+                    <div class="status-dot crawling"></div> 采集中...
+                </div>
+            </div>
+
+            <div id="resultsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:20px;"></div>
+        </section>
+
+        <!-- 报告页 -->
+        <section id="reportSection" style="display:none;padding:40px 20px 60px;max-width:900px;margin:0 auto;">
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;margin-bottom:24px;">
+                    <div>
+                        <h2 style="font-size:20px;font-weight:700;color:var(--accent);margin-bottom:8px;">综合研判报告</h2>
+                        <div style="font-size:12px;color:var(--fg-muted);" id="reportMeta"></div>
+                    </div>
+                    <div style="display:flex;gap-8px;">
+                        <button onclick="copyReport()" style="padding:8px 16px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--fg);font-size:12px;cursor:pointer;">复制</button>
+                        <button onclick="feedToNotebookLM()" style="padding:8px 16px;background:var(--accent);color:#000;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">投喂NotebookLM</button>
+                    </div>
+                </div>
+                <div id="reportContent" style="line-height:1.8;font-size:14px;color:var(--fg);"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 详情模态框 -->
+    <div class="modal-overlay" id="detailModal" onclick="if(event.target===this)closeModal()">
+        <div class="modal-content" style="padding:24px;max-height:80vh;overflow-y:auto;" id="modalContent"></div>
+    </div>
+
+    <script>
+        // 全局状态
+        const activeSources = new Set(['wechat', 'xiaohongshu']);
+        let window.searchData = null;
+        let window.finalReport = null;
+        let window.finalLinks = null;
+
+        // UI 工具
+        function showToast(msg, type='info') {
+            const c = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = 'toast ' + type;
+            t.innerText = msg;
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+        function q(id) { return document.getElementById(id); }
+        function toggleSource(el) {
+            const s = el.dataset.source;
+            el.classList.toggle('active');
+            activeSources.has(s) ? activeSources.delete(s) : activeSources.add(s);
+        }
+        function quickSearch(k) { q('searchInput').value = k; startSearch(); }
+        function resetSearch() {
+            q('heroSection').style.display = 'flex';
+            q('resultsSection').style.display = 'none';
+            q('reportSection').style.display = 'none';
+        }
+        function openModal(item) {
+            q('modalContent').innerHTML = `<h3 style="margin-bottom:12px;color:var(--accent);">${item.title}</h3><p style="font-size:13px;color:var(--fg-muted);">${item.content||''}</p><a href="${item.link}" target="_blank" style="color:var(--accent2);font-size:12px;">查看原文</a>`;
+            q('detailModal').classList.add('show');
+        }
+        function closeModal() { q('detailModal').classList.remove('show'); }
+
+        // 核心搜索
+        async function startSearch() {
+            const kw = q('searchInput').value.trim();
+            if(!kw) return showToast('请输入关键词','danger');
+            
+            q('heroSection').style.display='none';
+            q('resultsSection').style.display='block';
+            q('reportSection').style.display='none';
+            q('searchKeyword').innerText=kw;
+            q('resultCount').innerText='...';
+            q('resultsList').innerHTML='';
+            q('crawlStatus').style.display='flex';
+
+            try {
+                const res = await fetch('/api/search', {
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({keyword:kw, activeSources:Array.from(activeSources)})
+                });
+                const data = await res.json();
+                if(!res.ok) throw new Error(data.error||'请求失败');
+                
+                window.searchData = data;
+                const items = data.tavilyData?.results || [];
+                q('resultCount').innerText = items.length;
+                q('crawlStatus').style.display='none';
+                
+                // 渲染列表
+                items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className='project-card bg-[var(--card)] rounded-xl p-5 cursor-pointer';
+                    div.onclick=()=>openModal(item);
+                    div.innerHTML = `
+                        <div style="font-weight:600;color:var(--fg);margin-bottom:6px;word-break:break-all;">${item.title||'无标题'}</div>
+                        <div style="font-size:12px;color:var(--fg-muted);line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${item.content||''}</div>
+                        <div style="font-size:11px;color:var(--accent2);">来源: Tavily</div>`;
+                    q('resultsList').appendChild(div);
+                });
+                
+                if(items.length===0) q('resultsList').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--fg-muted);">未找到数据</div>';
+                
+            } catch(e) {
+                q('crawlStatus').style.display='none';
+                showToast('搜索失败: '+e.message, 'danger');
+            }
+        }
+
+        // 生成报告
+        async function generateReport() {
+            if(!window.searchData) return showToast('请先搜索','danger');
+            const btn = q('genReportBtn');
+            const old = btn.innerHTML;
+            btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> 生成中...';
+            btn.disabled=true;
+
+            try {
+                const res = await fetch('/api/analyze', {
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({
+                        keyword:window.searchData.keyword,
+                        tavilyData:window.searchData.tavilyData,
+                        socialData:window.searchData.socialData,
+                        linkList:window.searchData.linkList
+                    })
+                });
+                const data = await res.json();
+                if(!res.ok) throw new Error(data.error||'生成失败');
+                
+                window.finalReport = data.report;
+                window.finalLinks = window.searchData.linkList;
+                
+                q('reportSection').style.display='block';
+                q('reportContent').innerHTML = data.report;
+                q('reportMeta').innerText = '基于 "'+window.searchData.keyword+'" 生成';
+                window.scrollTo({top:0, behavior:'smooth'});
+                
+            } catch(e) {
+                showToast('生成失败: '+e.message, 'danger');
+            } finally {
+                btn.innerHTML=old;
+                btn.disabled=false;
+            }
+        }
+
+        // 复制与投喂
+        function copyReport() {
+            if(!window.finalReport) return;
+            const text = window.finalReport + "\n\n===== LINKS =====\n" + (window.finalLinks||'');
+            navigator.clipboard.writeText(text).then(()=>showToast('已复制到剪贴板','success'));
+        }
+        function feedToNotebookLM() {
+            copyReport();
+            window.open('https://notebooklm.google.com/','_blank');
+        }
+
+        // 初始化
+        q('searchInput').addEventListener('keydown', e=>{ if(e.key==='Enter')startSearch(); });
+    </script>
+</body>
+</html>
